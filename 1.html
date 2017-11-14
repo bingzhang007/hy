@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>111</title>
+    <script src="Scripts/jquery-1.4.1.min.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.cookie.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var str="what are you";
+        function unique(str) {
+            var obj={};//该变量的作用:用来存储字符串对应的次数:字符串---出现次数
+            //因为要找到每个字母出现了多少次,所以,要遍历该字符串
+            for(var i=0;i<str.length;i++){
+                //判断,这个字母在键值对中是否存在,如果不存在,把这个字母加入到键值对中
+                //之后做为键,该键对应的值就是该字母出现的次数
+                var key=str[i];//key中存储的是每一个字符串
+                if(obj[key]){//判断这个键值对中有没有这个键
+                    obj[key]++;
+                }else{
+                    obj[key]=1;//obj[w]=1
+                }
+            }
+
+            //找到出现次数最多的字符串,及次数
+            var maxCount=0;//假设是出现次数最多的次数
+            var maxString="";//假设这个字符串是次数出现最多的字符串
+            for(var key in obj){
+                if(maxCount<obj[key]){
+                    maxCount=obj[key];//保存最大的次数
+                    maxString=key;
+                }
+            }
+           console.log ("该字母:"+maxString+"出现了"+maxCount+"次");
+        }
+        unique(str)
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

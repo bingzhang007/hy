@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_433252_wjn80qqgogk3xr.css">
+</head>
+<body>
+    <div class="login_box">
+        <!--logo+电话-->
+        <header>
+            <a href="index.html">
+                <img src="img/logo.png" >
+            </a>
+            <div class="phone">
+                免费咨询热线： <b>400-567-4556</b>
+            </div>
+
+        </header>
+        <!--主体部分-->
+        <section>
+            <img src="img/imgbg_03.png" >
+            <form id="login">
+                <table>
+                    <thead>
+                    <tr height="60">
+                        <td></td>
+                        <td><p>登录 <span>还没有商城账号，<a href="register.html">立即注册</a></span></p></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td> 用户名</td>
+                        <td><input type="text" class="uName" name="uname"></td>
+                    </tr>
+
+                    <tr>
+                        <td>密&nbsp;&nbsp; 码</td>
+                        <td><input type="password" class="uPwd" name="upwd"></td>
+                    </tr>
+
+                    <tr class="input_tip">
+                        <td></td>
+                        <td >
+                            <div class="tip_txt">
+                                <i></i> <span></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr  style="vertical-align: bottom;height:26px">
+                        <td></td>
+                        <td style="height:16px;">
+                            <input type="checkbox" class="checkbox" style="height:16px">
+                            <lable class="txt">自动登录</lable>
+                            <a  href="javascript:" class="forget">忘记密码</a>
+                        </td>
+                    </tr>
+                    <tr height="40">
+                        <td></td>
+                        <td> <input type="button" id="btnLogin" value="登录"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </section>
+        <!--页面底部-->
+        <footer>
+            备案/许可证编号：蜀ICP备12009302号-1-www.dingguagua.com Copyright © 2015-2018 尤洪商城网 All Rights Reserved. 复制必究 , Technical Support: Dgg Group
+        </footer>
+    </div>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

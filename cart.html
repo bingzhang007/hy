@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_433252_p5uyrhr8r774x6r.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+<div id="header"></div>
+<!--主体部分-->
+<section id="main">
+    <div class="wrap">
+        <img src="img/Process_img_01.png" alt="">
+        <!--购物车-->
+        <ul id="cart_tab">
+            <li class="selectAll"><input type="checkbox">全选</li>
+            <li class="th_info">商品信息</li>
+            <li class="th_price">单价</li>
+            <li class="th_amount">数量</li>
+            <li class="th_sum">金额</li>
+            <li class="th_op">操作</li>
+        </ul>
+        <ul id="cart_content">
+
+        </ul>
+        <!--结算栏-->
+        <ul id="account">
+            <li class="lf">
+                <p class="selectALL2"><input type="checkbox" >全选</p>
+                <a href="" class="del">删除</a>
+                <a href="" class="collect">加入收藏</a>
+            </li>
+            <li class="rt">
+                <p class="selected">已选商品 <b>0</b> 件</p>
+                <p class="price_sum"> 合计：<span>￥99.00</span> </p>
+                <button  class="btn_area">结算</button>
+            </li>
+        </ul>
+    </div>
+</section>
+<!--页面底部-->
+<div id="footer"></div>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/common.js"></script>
+<script src="js/cart.js"></script>
+</body>
+</html>

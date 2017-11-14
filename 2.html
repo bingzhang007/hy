@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+$(function () {
+
+var wrongTypeName, //用户名的错误类型，可以直接作为错误提示信息数组的下标
+wrongTypePwd, //用户密码的错误类型
+wrongNameHtml = new Array("", "请输入用户名", "用户名长度太短", "用户名长度超过12位", "您的用户名或密码错误", "超时，请重新登陆"),
+wrongPwdHtml = new Array("", "请输入密码", "密码长度小于6位", "", "密码中含有非法字符"),
+editPass=false;
+
+$('body').focus(); //让输入框不再自动获取焦点
+
+$('.reg-action .reg-input').each(function () {
+var items = $(this).parent('.reg-item');
+if ($(this).val()) {
+items.addClass("focus");
+}
+$(this).bind('focus blur', function (event) {
+var type = event.type; //获取事件类型
+if($(this).attr("id")=="passwd"){
+editPass = true;
+}
+if (type == 'focus') {
+if (items.hasClass('error')) {
+$(this).val("");
+items.removeClass('error');
+}
+items.addClass('focus');
+} else if (!$(this).val()) {
+items.removeClass('focus');
+}
+})
+});
+
+$(".btn-submit").click(function () {
+wrongTypeName = 0;
+wrongTypePwd = 0;
+var uname = $("#uname").val(), //用户名
+pwd = $("#passwd").val(), //用户密码
+plength = pwd.length,
+nlength = uname.length; //长度
+if (nlength == 0)
+wrongTypeName = 1;
+if (nlength > 0 && nlength < 2)
+wrongTypeName = 2;
+if (nlength > 20)
+wrongTypeName = 3;
+if (plength == 0)
+wrongTypePwd = 1; //这里是对用户名和密码长度的一个判断，并获取错误信息数组的下标。
+else {
+var patrn = /^(\w){6,20}$/;
+if (plength < 6)
+wrongTypePwd = 2;
+if (plength > 50)
+wrongTypePwd = 3;
+if (plength > 6 && plength < 20) {
+if (!patrn.exec(pwd))
+wrongTypePwd = 4; //这里是对用户密码合法性的前端判断，并返回错误数组的下标
+}
+}
+
+inputTip(0, wrongNameHtml, wrongTypeName);
+inputTip(1, wrongPwdHtml, wrongTypePwd);
+
+if (wrongTypePwd == 0 && wrongTypeName == 0) {//在用户输入信息完全合法的情况下，即数组下标全部为0 开始执行ajax验证
+//alert($.cookie("logout"));
+if(editPass){
+pwd = $.md5(pwd);
+}
+$("#passwd").val(pwd);
+$("#login-form input").attr('disabled', true);
+$('.remember').unbind('click');
+//已经向服务器提交了信息，所以将页面上的所有输入框按钮设置成不可用状态，这样可以有效的避免重复提交
+var remb = $('#remember-long').val();
+ajaxCheck(uname, pwd, remb);
+}
+});
+
+var inputTip = function (index, tipHtml, tipNum) {
+$(".reg-tip").eq(index).html(tipHtml[tipNum]);
+if (tipNum > 0)
+$(".reg-item").eq(index).addClass("error");
+else
+$(".reg-item").eq(index).removeClass("error");
+} //定义错误提示信息页面显示函数。由于页面只有两个输入框所以我这里直接指定了index，如果页面上有很多，可以使用$(this).index()
+
+var ajaxCheck = function (uname, pwd, remb) {
+$(".btn-master").addClass("visibility");
+var $params = "user_name=" + decodeURI(uname) + "&user_pwd=" + decodeURI(pwd) + "&remember=" + decodeURI(remb);
+$.ajax({
+type: 'POST',
+url: 'CheckUserLogin.aspx',
+//async: false,
+cache: false,
+dataType: 'json',
+data: $params,
+success: function (data, status) {
+wrongTypeName = data.wrongTypeName;
+wrongTypePwd = data.wrongTypePwd;
+var loginSuccess = data.loginSuccess; //获取服务器返回的json数据
+if (loginSuccess == 0) {
+if ($('#remember-long').val() == 1) {//记住密码
+$.cookie('UserName', uname, { expires: 7, path: '/' });
+$.cookie('Password', pwd, { expires: 7, path: '/' });
+}
+else if ($('#remember-long').val() == 0) {//取消记住的密码，或者没有记住密码
+$.cookie('UserName', null,{ expires: 7, path: '/' });
+$.cookie('Password', null,{ expires: 7, path: '/' });
+}
+location.href = "/Members/Members.html"
+}
+else {
+$(".btn-master").removeClass("visibility");
+$("#login-form input").attr('disabled', false);
+inputTip(0, wrongNameHtml, wrongTypeName);
+inputTip(1, wrongPwdHtml, wrongTypePwd);
+}
+},
+error: function () {
+wrongTypeName = 5;
+inputTip(0, wrongNameHtml, wrongTypeName);
+$("#login-form input").attr('disabled', false);
+$('.remember').bind('click', function () { checkClick(); });
+$(".btn-master").removeClass("visibility");
+}
+})
+}
+
+var checkClick = function () {
+if ($('#remember-long').attr('checked')) {
+$('#remember-long').attr('checked', false);
+$('#remember-long').val("0")
+}
+else {
+$('#remember-long').attr('checked', true);
+$('#remember-long').val("1")
+}
+}
+$('.remember').bind('click', function () { checkClick(); });
+$("#remember-long").click(function () { checkClick(); });
+//记住登录的checkbox和label点击的绑定。
+
+if ($.browser.msie && $.browser.version == "6.0") {
+//帮助微软消灭ie6
+if ($.cookie('masterShow') != "hidden")
+$('body').append('<div class="master"><p>您的浏览器是<strong>IE6.0</strong>，漏洞较多，用户体验较差，微软官方将要放弃支持，为了自身电脑安全和获取最佳用户体验建议你根据自身需求升级至<a href="http://windows.microsoft.com/zh-CN/internet-explorer/downloads/ie-8" target="_blank" class="red"><strong>IE8.0</strong></a>以上版本或者使用<a href="http://firefox.com.cn/" target="_blank" class="red"><strong>火狐</strong></a>浏览器</p></div><div class="m-close m-close-short">关闭</div><div class="m-close m-close-long">不再显示</div>');
+$(".master").delay(1000).slideDown('', function () {
+$(".m-close").fadeIn();
+});
+$(".m-close-short").click(function () {
+$(".m-close").fadeOut('', function () {
+$(".master").slideUp();
+});
+});
+$(".m-close-long").click(function () {
+$(".m-close").fadeOut('', function () {
+$(".master").slideUp();
+$.cookie('masterShow', 'hidden');
+});
+});
+}
+
+var rememberPassword = function (logout) {//页面加载完成之后执行自动登录检查
+var ckname = $.cookie('UserName');
+var ckpwd = $.cookie("Password");
+if (ckname != "" && ckpwd != "" && ckname != null && ckpwd != null) {
+$('#remember-long').val("1")
+$('#remember-long').attr('checked', true);
+$("#uname").val(ckname); //用户名
+$('.reg-item').addClass('focus');
+if (logout=="safe"){
+$.cookie("logout","",{ expires: 1, path: '/' })
+}
+else{
+$("#passwd").val(ckpwd); //用户密码
+$(".btn-submit").trigger('click'); //自动登录
+}
+}
+else {
+$('#remember-long').val("0")
+$('#remember-long').attr('checked', false);
+}
+}
+
+var logout = $.cookie("logout");//判断用户是否是从内部退出
+rememberPassword(logout);
+
+$(document).bind('keydown', 'return', function () { $(".btn-submit").trigger('click'); });
+})
+</script>
+</body>
+</html>
